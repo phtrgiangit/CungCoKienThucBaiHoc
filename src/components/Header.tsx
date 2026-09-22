@@ -1,19 +1,17 @@
 import React from 'react';
-import { GraduationCap, Trophy, FileText, Sparkles, KeyRound } from 'lucide-react';
+import { GraduationCap, Trophy, FileText, Sparkles } from 'lucide-react';
 import { AppView } from '../types';
 
 interface HeaderProps {
   currentView: AppView;
   onNavigate: (view: AppView) => void;
   selectedModel: string;
-  hasCustomKey: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   currentView,
   onNavigate,
   selectedModel,
-  hasCustomKey,
 }) => {
   return (
     <header className="border-b border-slate-200 bg-white/95 sticky top-0 z-30 backdrop-blur-md">
@@ -44,19 +42,11 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Right side navigation & status badges */}
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Active Model & Key Indicator */}
-          <div className="hidden md:flex items-center gap-2 px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 text-xs text-slate-600">
+          {/* Active Model Indicator */}
+          <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 text-xs text-slate-600">
             <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-            <span className="font-mono font-medium">{selectedModel}</span>
-            <span className="text-slate-300">|</span>
-            <span className="flex items-center gap-1 font-medium">
-              <KeyRound className="w-3 h-3 text-slate-500" />
-              {hasCustomKey ? (
-                <span className="text-emerald-700 font-semibold">Khóa tùy chỉnh</span>
-              ) : (
-                <span className="text-slate-600">Khóa mặc định</span>
-              )}
-            </span>
+            <span className="text-slate-500 font-normal">Mô hình:</span>
+            <span className="font-mono font-medium text-slate-800">{selectedModel}</span>
           </div>
 
           {/* Navigation Buttons */}

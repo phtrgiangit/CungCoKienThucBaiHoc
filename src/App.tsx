@@ -204,7 +204,6 @@ export default function App() {
           setCurrentView(view);
         }}
         selectedModel={config.model}
-        hasCustomKey={Boolean(config.apiKey && config.apiKey.trim())}
       />
 
       {/* Global Error Banner */}
