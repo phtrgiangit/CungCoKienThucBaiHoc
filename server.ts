@@ -3,7 +3,6 @@ import path from "path";
 import fs from "fs";
 import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
-import { createServer as createViteServer } from "vite";
 
 dotenv.config();
 
@@ -334,6 +333,7 @@ async function startServer() {
     fs.existsSync(path.join(distPath, "index.html"));
 
   if (!isProduction) {
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
@@ -351,4 +351,9 @@ async function startServer() {
   });
 }
 
-startServer();
+export default app;
+
+// Only start standalone HTTP server if not in a serverless environment (e.g. Vercel)
+if (!process.env.VERCEL) {
+  startServer();
+}
