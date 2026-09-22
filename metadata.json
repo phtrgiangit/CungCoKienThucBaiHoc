@@ -1,0 +1,6 @@
+{
+  "name": "Luyện Thi THPT - Trắc Nghiệm AI",
+  "description": "Ứng dụng củng cố kiến thức THPT qua trắc nghiệm tương tác từ tài liệu, kèm giải thích logic chi tiết và bảng xếp hạng thành tích.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
