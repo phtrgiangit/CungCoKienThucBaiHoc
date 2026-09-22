@@ -76,7 +76,20 @@ export const QuizSetup: React.FC<QuizSetupProps> = ({
           model: config.model,
         }),
       });
-      const data = await res.json();
+
+      const contentType = res.headers.get('content-type') || '';
+      let data: any = {};
+      if (contentType.includes('application/json')) {
+        data = await res.json();
+      } else {
+        const text = await res.text();
+        throw new Error(
+          res.status === 404
+            ? 'Không tìm thấy API xác thực máy chủ (HTTP 404). Vui lòng kiểm tra lại dịch vụ backend.'
+            : `Máy chủ phản hồi không đúng định dạng (${res.status}): ${text.slice(0, 100)}`
+        );
+      }
+
       if (res.ok && data.success) {
         setVerifyStatus({
           loading: false,

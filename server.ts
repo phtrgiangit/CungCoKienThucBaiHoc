@@ -1,14 +1,11 @@
 import express from "express";
 import path from "path";
-import { fileURLToPath } from "url";
+import fs from "fs";
 import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
 import { createServer as createViteServer } from "vite";
 
 dotenv.config();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = 3000;
@@ -49,13 +46,19 @@ app.post("/api/verify-key", async (req, res) => {
 
     for (const cand of candidateModels) {
       try {
+        console.log(`[verify-key] Testing model: ${cand}`);
         verifyResponse = await ai.models.generateContent({
           model: cand,
           contents: "Chào bạn! Hãy trả lời ngắn: 'API Key hợp lệ.'",
         });
-        if (verifyResponse?.text) break;
+        console.log(`[verify-key] Result for ${cand}:`, verifyResponse?.text);
+        if (verifyResponse?.text) {
+          verifyError = null;
+          break;
+        }
       } catch (err: any) {
         verifyError = err;
+        console.error(`[verify-key] Error for ${cand}:`, err?.message || err);
       }
     }
 
@@ -325,14 +328,18 @@ NGUYÊN TẮC BẮT BUỘC TUYỆT ĐỐI:
 
 // Vite middleware or static serving
 async function startServer() {
-  if (process.env.NODE_ENV !== "production") {
+  const distPath = path.join(process.cwd(), "dist");
+  const isProduction =
+    process.env.NODE_ENV === "production" ||
+    fs.existsSync(path.join(distPath, "index.html"));
+
+  if (!isProduction) {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
     });
     app.use(vite.middlewares);
   } else {
-    const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));
     app.get("*", (req, res) => {
       res.sendFile(path.join(distPath, "index.html"));
@@ -340,7 +347,7 @@ async function startServer() {
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://0.0.0.0:${PORT}`);
+    console.log(`Server running on http://0.0.0.0:${PORT} (Mode: ${isProduction ? "production" : "development"})`);
   });
 }
 
